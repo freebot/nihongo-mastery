@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TU_USUARIO/nihongo-mastery.git"
+    "url": "https://github.com/freebot/nihongo-mastery.git"
   },
   "keywords": [
     "japanese",
@@ -18,7 +18,7 @@
     "n3",
     "language-learning"
   ],
-  "author": "TU_NOMBRE",
+  "author": "Jorge Ikeda <freebot@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
