@@ -18,7 +18,7 @@
     "n3",
     "language-learning"
   ],
-  "author": "Jorge Ikeda",
+  "author": "TU_NOMBRE",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
