@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nihongo Mastery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #ff6f61;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background-color: #ff9a8d;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+    }
+    .section {
+      background-color: white;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+    .kanji-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .kanji-card h2 {
+      font-size: 48px;
+    }
+    .quiz {
+      margin-top: 20px;
+    }
+    .quiz button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff6f61;
+      color: white;
+      cursor: pointer;
+    }
+    .quiz button:hover {
+      background-color: #ff4d3b;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #ff6f61;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nihongo Mastery</h1>
+    <p>Aprende japonés para los niveles JLPT N4 y N3</p>
+  </header>
+  <nav>
+    <a href="#kanji">Kanji</a>
+    <a href="#vocabulario">Vocabulario</a>
+    <a href="#gramatica">Gramática</a>
+    <a href="#audicion">Comprensión Auditiva</a>
+    <a href="#lectura">Lectura</a>
+  </nav>
+  <div class="container">
+    <section id="kanji" class="section">
+      <h2>Kanji del Día</h2>
+      <div class="kanji-card" id="kanji-card">
+        <!-- Contenido dinámico -->
+      </div>
+      <div class="quiz" id="quiz">
+        <!-- Preguntas dinámicas -->
+      </div>
+    </section>
+  </div>
+  <footer>
+    <p>&copy; 2023 Nihongo Mastery. Todos los derechos reservados.</p>
+  </footer>
+  <script>
+    // Fetch kanji data from the backend
+    async function loadKanji() {
+      const response = await fetch('/api/kanji');
+      const data = await response.json();
+      const kanjiCard = document.getElementById('kanji-card');
+      kanjiCard.innerHTML = `
+        <h2>${data.kanji}</h2>
+        <p><strong>Lecturas:</strong> On'yomi: ${data.onyomi}, Kun'yomi: ${data.kunyomi}</p>
+        <p><strong>Significado:</strong> ${data.meaning}</p>
+      `;
+
+      const quiz = document.getElementById('quiz');
+      quiz.innerHTML = `
+        <p>¿Cuál es la lectura de este kanji?</p>
+        <button onclick="checkAnswer('${data.onyomi}')">${data.onyomi}</button>
+        <button onclick="checkAnswer('wrong')">Incorrecto</button>
+        <p id="feedback"></p>
+      `;
+    }
+
+    function checkAnswer(answer) {
+      const feedback = document.getElementById('feedback');
+      if (answer === 'イチ') {
+        feedback.textContent = '¡Correcto! La lectura es イチ.';
+        feedback.style.color = 'green';
+      } else {
+        feedback.textContent = 'Incorrecto. Intenta de nuevo.';
+        feedback.style.color = 'red';
+      }
+    }
+
+    // Load kanji on page load
+    window.onload = loadKanji;
+  </script>
+</body>
+</html>
