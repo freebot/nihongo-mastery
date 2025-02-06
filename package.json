@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "export-db": "docker cp nihongo-mastery:/app/db/database.sqlite ./db-data/database.sqlite",
+    "import-db": "docker cp ./db-data/database.sqlite nihongo-mastery:/app/db/database.sqlite"
   },
   "repository": {
     "type": "git",
