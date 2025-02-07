@@ -24,25 +24,18 @@ module.exports = (db) => {
   router.get('/download-instructions', (req, res) => {
     const instructions = `
 Instrucciones para Recrear el Entorno Docker
-
 1. Instala Docker en tu sistema:
    https://www.docker.com/get-started
-
 2. Construye la imagen de Docker:
    docker build -t nihongo-mastery .
-
 3. Crea un directorio local para los datos:
    mkdir -p ./db-data
-
 4. Coloca el archivo database.sqlite en ./db-data.
-
 5. Ejecuta el contenedor con el volumen:
    docker run -p 3000:3000 -v $(pwd)/db-data:/app/db --name nihongo-mastery nihongo-mastery
-
 6. Accede a la aplicación en:
    http://localhost:3000
     `;
-
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Content-Disposition', 'attachment; filename="README.txt"');
     res.send(instructions);
@@ -51,17 +44,29 @@ Instrucciones para Recrear el Entorno Docker
   // Ruta para obtener un kanji aleatorio
   router.get('/kanji', (req, res) => {
     db.get("SELECT * FROM kanji ORDER BY RANDOM() LIMIT 1", (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
+      if (err) {
+        console.error('Error al consultar kanji:', err);
+        return res.status(500).json({ error: 'Error al cargar kanji.' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'No se encontraron kanji.' });
+      }
       res.json(row);
     });
   });
 
-  // Ruta para obtener vocabulario por nivel
+  // Ruta para obtener vocabulario (una palabra aleatoria)
   router.get('/vocabulary', (req, res) => {
     const level = req.query.level || 'N4';
-    db.all("SELECT * FROM vocabulary WHERE level = ?", [level], (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(rows);
+    db.get("SELECT * FROM vocabulary WHERE level = ? ORDER BY RANDOM() LIMIT 1", [level], (err, row) => {
+      if (err) {
+        console.error('Error al consultar vocabulario:', err);
+        return res.status(500).json({ error: 'Error al cargar vocabulario.' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'No se encontraron palabras.' });
+      }
+      res.json(row);
     });
   });
 
@@ -72,7 +77,10 @@ Instrucciones para Recrear el Entorno Docker
       "INSERT INTO vocabulary (word, reading, meaning, level) VALUES (?, ?, ?, ?)",
       [word, reading, meaning, level],
       function (err) {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+          console.error('Error al agregar vocabulario:', err);
+          return res.status(500).json({ error: 'Error al agregar vocabulario.' });
+        }
         res.json({ id: this.lastID, word, reading, meaning, level });
       }
     );
@@ -81,7 +89,13 @@ Instrucciones para Recrear el Entorno Docker
   // Ruta para obtener una estructura gramatical aleatoria
   router.get('/grammar', (req, res) => {
     db.get("SELECT * FROM grammar ORDER BY RANDOM() LIMIT 1", (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
+      if (err) {
+        console.error('Error al consultar gramática:', err);
+        return res.status(500).json({ error: 'Error al cargar gramática.' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'No se encontró gramática.' });
+      }
       res.json(row);
     });
   });

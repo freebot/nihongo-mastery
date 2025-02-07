@@ -38,12 +38,54 @@ nav a {
   max-width: 600px;
 }
 
-footer {
-  text-align: center;
-  padding: 10px;
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
   background-color: #ff6f61;
   color: white;
-  position: fixed;
-  bottom: 0;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff4d3b;
+}
+
+#quiz-options button {
+  display: block;
+  margin: 10px 0;
   width: 100%;
+  padding: 10px;
+  background-color: #ff9a8d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#quiz-options button.correct {
+  background-color: green;
+}
+
+#quiz-options button.incorrect {
+  background-color: red;
 }
