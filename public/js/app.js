@@ -90,12 +90,19 @@ async function loadVocabulary() {
     const response = await fetch('/api/vocabulary?level=N4');
     if (!response.ok) throw new Error('Error al cargar vocabulario');
     const data = await response.json();
-    document.getElementById('vocab-list').innerHTML = `
+
+    // Verificar que los datos contengan las propiedades esperadas
+    if (!data.word || !data.reading || !data.meaning) {
+      throw new Error('Datos de vocabulario incompletos.');
+    }
+
+    const vocabList = document.getElementById('vocab-list');
+    vocabList.innerHTML = `
       <li><strong>${data.word} (${data.reading}):</strong> ${data.meaning}</li>
     `;
   } catch (error) {
     console.error('Error al cargar vocabulario:', error);
-    document.getElementById('vocab-list').innerHTML = '<p>No se pudo cargar el vocabulario.</p>';
+    document.getElementById('vocab-list').innerHTML = '<p>No se pudo cargar el vocabulario. Verifica que haya datos en la base de datos.</p>';
   }
 }
 

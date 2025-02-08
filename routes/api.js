@@ -66,7 +66,7 @@ Instrucciones para Recrear el Entorno Docker
       if (!row) {
         return res.status(404).json({ error: 'No se encontraron palabras.' });
       }
-      res.json(row);
+      res.json(row); // Devuelve un objeto con los datos de la palabra
     });
   });
 
