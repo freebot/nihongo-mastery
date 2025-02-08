@@ -63,6 +63,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Importar datos desde un archivo JSON
+  document.getElementById('import-data-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById('import-file');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Selecciona un archivo JSON.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const jsonData = JSON.parse(event.target.result);
+
+        const response = await fetch('/api/import-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jsonData),
+        });
+
+        if (!response.ok) throw new Error('Error al importar datos.');
+
+        alert('Datos importados exitosamente.');
+        loadKanji();
+        loadVocabulary();
+        loadGrammar();
+      } catch (error) {
+        console.error('Error al importar datos:', error);
+        alert('Error al importar datos.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
   // Quiz
   document.getElementById('next-question').addEventListener('click', () => {
     loadQuiz();
@@ -90,19 +126,12 @@ async function loadVocabulary() {
     const response = await fetch('/api/vocabulary?level=N4');
     if (!response.ok) throw new Error('Error al cargar vocabulario');
     const data = await response.json();
-
-    // Verificar que los datos contengan las propiedades esperadas
-    if (!data.word || !data.reading || !data.meaning) {
-      throw new Error('Datos de vocabulario incompletos.');
-    }
-
-    const vocabList = document.getElementById('vocab-list');
-    vocabList.innerHTML = `
+    document.getElementById('vocab-list').innerHTML = `
       <li><strong>${data.word} (${data.reading}):</strong> ${data.meaning}</li>
     `;
   } catch (error) {
     console.error('Error al cargar vocabulario:', error);
-    document.getElementById('vocab-list').innerHTML = '<p>No se pudo cargar el vocabulario. Verifica que haya datos en la base de datos.</p>';
+    document.getElementById('vocab-list').innerHTML = '<p>No se pudo cargar el vocabulario.</p>';
   }
 }
 

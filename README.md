@@ -1,166 +1,176 @@
-¡Claro! Aquí tienes un archivo `README.md` bien estructurado que describe el proyecto, cómo configurarlo y usarlo. También he incluido a **Jorge Ikeda** como autor.
 
 ---
 
-### **README.md**
-
-```markdown
 # Nihongo Mastery
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-**Nihongo Mastery** es una aplicación web diseñada para ayudarte a aprender japonés, específicamente enfocada en los niveles **N4 y N3** del **JLPT (Japanese Language Proficiency Test)**. La aplicación incluye lecciones interactivas de kanji, vocabulario, gramática, comprensión auditiva y lectura.
+**Nihongo Mastery** es una aplicación web diseñada para ayudarte a aprender japonés enfocándose en los niveles JLPT N4 y N3. La aplicación incluye secciones para practicar kanji, vocabulario, gramática, listening (comprensión auditiva) y reading (comprensión lectora). Además, ofrece funcionalidades avanzadas como exportar e importar datos para hacer respaldos y evitar duplicados.
 
 ## Características Principales
 
-- **Kanji:** Aprende kanji con ejemplos, lecturas y significados.
-- **Vocabulario:** Lista de palabras esenciales organizadas por nivel (N4 y N3).
-- **Gramática:** Explicaciones claras y ejemplos prácticos de estructuras gramaticales.
-- **Comprensión Auditiva:** Audios auténticos con transcripciones y preguntas de comprensión.
-- **Lectura:** Textos cortos con preguntas de comprensión.
-- **Backend:** API RESTful construida con Node.js y SQLite para gestionar el contenido educativo.
-- **Docker:** Compatible con Docker para facilitar el despliegue.
+- **Kanji del Día:** Muestra un kanji aleatorio con su significado, lecturas on'yomi y kun'yomi.
+- **Vocabulario del Día:** Muestra una palabra aleatoria con su lectura y significado.
+- **Gramática del Día:** Explica una estructura gramatical aleatoria con ejemplos.
+- **Quiz Interactivo:** Realiza preguntas sobre kanji y vocabulario con opciones múltiples y lleva un sistema de puntuación.
+- **Agregar Conocimiento:** Permite añadir nuevos kanji, vocabulario o estructuras gramaticales a la base de datos.
+- **Exportar/Importar Datos:** Exporta tus datos como un archivo JSON y vuelve a importarlos para evitar duplicados.
+- **Descargas:** Descarga la base de datos SQLite o las instrucciones para recrear el entorno Docker.
 
-## Capturas de Pantalla
+---
 
-![Captura 1](./screenshots/screenshot1.png)  
-*Interfaz principal de la aplicación.*
+## Requisitos Previos
 
-![Captura 2](./screenshots/screenshot2.png)  
-*Ejemplo de una lección de kanji.*
+Antes de ejecutar la aplicación, asegúrate de tener instalado lo siguiente:
 
-## Requisitos
+1. **Node.js:** Versión 16 o superior.
+2. **Docker:** Para ejecutar la aplicación en un contenedor Docker.
+3. **SQLite3:** Para gestionar la base de datos localmente.
 
-- Node.js (v16 o superior)
-- npm (v8 o superior)
-- SQLite
-- Docker (opcional, para despliegue)
+---
 
-## Instalación
+## Configuración Inicial
 
 ### 1. Clonar el Repositorio
 
+Clona este repositorio en tu máquina local:
+
 ```bash
-git clone https://github.com/TU_USUARIO/nihongo-mastery.git
+git clone https://github.com/tu-usuario/nihongo-mastery.git
 cd nihongo-mastery
 ```
 
 ### 2. Instalar Dependencias
 
+Instala las dependencias necesarias usando npm:
+
 ```bash
 npm install
 ```
 
-### 3. Configurar la Base de Datos
+### 3. Crear la Base de Datos
 
-La base de datos utiliza SQLite. Para crear y poblar la base de datos:
+Asegúrate de que el archivo `db/database.sqlite` exista. Si no existe, puedes crearlo ejecutando el script `init-db.sql`:
 
 ```bash
 sqlite3 db/database.sqlite < db/init-db.sql
 ```
 
-### 4. Iniciar la Aplicación
+El archivo `init-db.sql` contiene las tablas y datos iniciales para `kanji`, `vocabulary`, `grammar`, `listening` y `reading`.
 
-#### Modo de Desarrollo
+---
 
-```bash
-npm run dev
-```
+## Ejecutar la Aplicación
 
-#### Modo de Producción
+### Opción 1: Ejecutar Localmente
 
-```bash
-npm start
-```
-
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
-
-## Uso con Docker
-
-### Construir la Imagen de Docker
+Para ejecutar la aplicación localmente:
 
 ```bash
-docker build -t nihongo-mastery .
+node server.js
 ```
 
-### Ejecutar el Contenedor
+Abre tu navegador y accede a:
 
-```bash
-docker run -p 3000:3000 nihongo-mastery
+```
+http://localhost:3000
 ```
 
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+### Opción 2: Usar Docker
+
+Si prefieres usar Docker, sigue estos pasos:
+
+1. Construye la imagen de Docker:
+
+   ```bash
+   docker build -t nihongo-mastery .
+   ```
+
+2. Crea un directorio local para los datos:
+
+   ```bash
+   mkdir -p ./db-data
+   ```
+
+3. Coloca el archivo `database.sqlite` en el directorio `./db-data`.
+
+4. Ejecuta el contenedor:
+
+   ```bash
+   docker run -p 3000:3000 -v $(pwd)/db-data:/app/db --name nihongo-mastery nihongo-mastery
+   ```
+
+5. Accede a la aplicación en:
+
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+## Uso de la Aplicación
+
+### 1. Navegar por las Secciones
+
+Usa el menú de navegación para moverte entre las diferentes secciones:
+
+- **Kanji:** Muestra un kanji aleatorio con su significado y lecturas.
+- **Vocabulario:** Muestra una palabra aleatoria con su lectura y significado.
+- **Gramática:** Explica una estructura gramatical aleatoria con ejemplos.
+- **Quiz:** Realiza preguntas interactivas sobre kanji y vocabulario.
+- **Agregar Conocimiento:** Añade nuevos kanji, vocabulario o estructuras gramaticales.
+- **Descargas:** Exporta/importa datos o descarga la base de datos.
+
+### 2. Exportar e Importar Datos
+
+- **Exportar Datos:** Haz clic en "Exportar Datos (JSON)" para descargar un archivo JSON con todos los datos.
+- **Importar Datos:** Usa el formulario "Importar Datos (JSON)" para cargar un archivo JSON previamente exportado.
+
+---
 
 ## Estructura del Proyecto
 
 ```
-/nihongo-mastery
-  ├── /db
-  │     └── init-db.sql          # Script SQL para inicializar la base de datos
-  │     └── database.sqlite      # Base de datos SQLite
-  ├── /public
-  │     └── index.html           # Frontend de la aplicación
-  ├── server.js                  # Servidor principal (backend)
-  ├── package.json               # Dependencias y scripts
-  └── Dockerfile                 # Archivo para construir la imagen de Docker
+nihongo-mastery/
+├── db/
+│   ├── database.sqlite       # Base de datos SQLite
+│   └── init-db.sql           # Script para inicializar la base de datos
+├── public/
+│   ├── css/                  # Archivos CSS
+│   ├── js/                   # Archivos JavaScript
+│   └── index.html            # Página principal
+├── routes/
+│   └── api.js                # Rutas API del backend
+├── server.js                 # Servidor Express
+├── package.json              # Dependencias y scripts
+└── README.md                 # Documentación del proyecto
 ```
+
+---
 
 ## Contribuciones
 
-¡Las contribuciones son bienvenidas! Si deseas mejorar la aplicación, agregar contenido educativo o corregir errores, sigue estos pasos:
+¡Las contribuciones son bienvenidas! Si deseas mejorar la aplicación, sigue estos pasos:
 
 1. Haz un fork del repositorio.
-2. Crea una rama para tu contribución (`git checkout -b feature/nueva-funcionalidad`).
-3. Haz commit de tus cambios (`git commit -m "Agrega nueva funcionalidad"`).
+2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
+3. Realiza tus cambios y haz commit (`git commit -m "Añadir nueva funcionalidad"`).
 4. Sube tus cambios (`git push origin feature/nueva-funcionalidad`).
 5. Abre un pull request.
 
+---
+
 ## Licencia
 
-Este proyecto está bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
-
-## Autor
-
-**Jorge Ikeda**  
-- GitHub: [@freebot](https://github.com/freebot)  
-- Email: jorgeikeda@example.com  
-
----
-```
+Este proyecto está bajo la licencia [MIT](LICENSE). Esto significa que puedes usar, modificar y distribuir el código libremente, siempre que incluyas la licencia original.
 
 ---
 
-### **Notas Adicionales**
+## Contacto
 
-1. **Capturas de Pantalla:**
-   - Guarda las capturas de pantalla en una carpeta llamada `/screenshots` dentro del proyecto y actualiza las rutas en el archivo `README.md`.
+Si tienes preguntas o sugerencias, no dudes en contactarme:
 
-2. **Licencia:**
-   - Crea un archivo llamado `LICENSE` en la raíz del proyecto con el siguiente contenido:
-
-```text
-MIT License
-
-Copyright (c) 2023 Jorge Ikeda
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+- **Correo Electrónico:** freebot@gmail.com
+- **GitHub:** [https://github.com/freebot(https://github.com/freebot)
 
 ---
 
+¡Espero que disfrutes aprendiendo japonés con **Nihongo Mastery**! 😊

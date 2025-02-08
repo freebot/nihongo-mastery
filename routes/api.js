@@ -100,5 +100,73 @@ Instrucciones para Recrear el Entorno Docker
     });
   });
 
+  // Ruta para exportar datos como JSON
+  router.get('/export-data', (req, res) => {
+    const queries = [
+      "SELECT * FROM kanji",
+      "SELECT * FROM vocabulary",
+      "SELECT * FROM grammar"
+    ];
+
+    const results = {};
+    let completedQueries = 0;
+
+    queries.forEach((query, index) => {
+      db.all(query, [], (err, rows) => {
+        if (err) {
+          console.error('Error al exportar datos:', err);
+          return res.status(500).send('Error al exportar datos.');
+        }
+
+        const tableName = ['kanji', 'vocabulary', 'grammar'][index];
+        results[tableName] = rows;
+
+        completedQueries++;
+        if (completedQueries === queries.length) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Content-Disposition', 'attachment; filename="backup.json"');
+          res.send(JSON.stringify(results, null, 2));
+        }
+      });
+    });
+  });
+
+  // Ruta para importar datos desde un archivo JSON
+  router.post('/import-data', express.json({ limit: '10mb' }), (req, res) => {
+    const { kanji, vocabulary, grammar } = req.body;
+
+    if (!kanji || !vocabulary || !grammar) {
+      return res.status(400).send('Datos inválidos.');
+    }
+
+    const insertData = (table, data, columns) => {
+      return new Promise((resolve, reject) => {
+        const placeholders = columns.map(() => '?').join(', ');
+        const query = `INSERT OR IGNORE INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`;
+
+        const tasks = data.map(row => {
+          return new Promise((resolveTask, rejectTask) => {
+            db.run(query, columns.map(col => row[col]), (err) => {
+              if (err) return rejectTask(err);
+              resolveTask();
+            });
+          });
+        });
+
+        Promise.all(tasks).then(resolve).catch(reject);
+      });
+    };
+
+    Promise.all([
+      insertData('kanji', kanji, ['kanji', 'onyomi', 'kunyomi', 'meaning']),
+      insertData('vocabulary', vocabulary, ['word', 'reading', 'meaning', 'level']),
+      insertData('grammar', grammar, ['structure', 'explanation', 'example', 'level'])
+    ])
+      .then(() => res.send('Datos importados exitosamente.'))
+      .catch(err => {
+        console.error('Error al importar datos:', err);
+        res.status(500).send('Error al importar datos.');
+      });
+  });
   return router;
 };

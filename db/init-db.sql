@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS kanji (
 CREATE TABLE IF NOT EXISTS vocabulary (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   word TEXT NOT NULL,
-  reading TEXT,
-  meaning TEXT,
-  level TEXT CHECK(level IN ('N4', 'N3'))
+  reading TEXT NOT NULL,
+  meaning TEXT NOT NULL,
+  level TEXT CHECK(level IN ('N4', 'N3')) NOT NULL
 );
 
 -- Crear tabla de Gramática
